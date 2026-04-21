@@ -1,0 +1,34 @@
+=== ERROR: ORA-12541 ===
+DESKRIPSI: TNS: No Listener — Oracle database tidak dapat ditemukan
+PENYEBAB:
+- Oracle listener service tidak berjalan
+- Hostname atau port salah di konfigurasi
+- Firewall memblokir koneksi ke port 1521
+
+SOLUSI:
+1. Cek status listener: lsnrctl status
+2. Start listener jika mati: lsnrctl start
+3. Verifikasi tnsnames.ora sudah benar
+4. Cek firewall: telnet [host] 1521
+
+=== ERROR: ORA-01017 ===
+DESKRIPSI: Invalid username/password; logon denied
+PENYEBAB:
+- Password salah atau sudah expired
+- Username tidak ada di database
+
+SOLUSI:
+1. Reset password: ALTER USER [username] IDENTIFIED BY [newpass];
+2. Cek user aktif: SELECT username, account_status FROM dba_users;
+3. Unlock user: ALTER USER [username] ACCOUNT UNLOCK;
+
+=== ERROR: HTTP 502 Bad Gateway ===
+DESKRIPSI: Server upstream tidak merespons
+PENYEBAB:
+- Application server mati atau crash
+- Timeout koneksi
+
+SOLUSI:
+1. Cek status aplikasi di server backend
+2. Restart application service
+3. Cek log di /var/log/nginx/error.log

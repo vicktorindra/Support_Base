@@ -1,0 +1,28 @@
+=== TUTORIAL: Reset Password User Windows AD ===
+LANGKAH-LANGKAH:
+1. Buka Active Directory Users and Computers (ADUC)
+2. Cari user yang bersangkutan
+3. Klik kanan → Reset Password
+4. Masukkan password baru
+5. Centang "User must change password at next logon"
+6. Klik OK
+
+VIA POWERSHELL:
+Set-ADAccountPassword -Identity [username] -Reset -NewPassword (ConvertTo-SecureString "NewPass123!" -AsPlainText -Force)
+Unlock-ADAccount -Identity [username]
+
+=== TUTORIAL: Clear Cache Browser ===
+CHROME:
+1. Tekan Ctrl+Shift+Delete
+2. Pilih rentang waktu: All time
+3. Centang Cached images and files + Cookies
+4. Klik Clear data
+
+=== TUTORIAL: Troubleshooting Koneksi VPN ===
+LANGKAH DIAGNOSA:
+1. Pastikan internet aktif tanpa VPN
+2. Cek kredensial VPN masih valid
+3. Disconnect dan reconnect
+4. Restart VPN client
+5. Flush DNS: ipconfig /flushdns
+6. Cek port VPN: Test-NetConnection -Port 443 -ComputerName [vpn-server]
