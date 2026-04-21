@@ -1,8 +1,5 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
 import path from "path";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 function loadKnowledgeBase() {
   const dir = path.join(process.cwd(), "knowledge");
@@ -34,29 +31,28 @@ PANDUAN MENJAWAB:
 - Gunakan bahasa Indonesia yang jelas dan mudah dipahami
 - Untuk kode error: jelaskan penyebab + langkah solusi step-by-step
 - Untuk kode program/command: tampilkan dalam format kode
-- Jika ada beberapa kemungkinan masalah, tanyakan info tambahan
 
 KNOWLEDGE BASE:
 ${knowledge}`;
 
   try {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
-      systemInstruction: systemPrompt,
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "meta-llama/llama-3.1-8b-instruct:free",
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...messages.slice(-20),
+        ],
+      }),
     });
 
-    // Konversi format messages ke format Gemini
-    const history = messages.slice(0, -1).map((m) => ({
-      role: m.role === "assistant" ? "model" : "user",
-      parts: [{ text: m.content }],
-    }));
-
-    const lastMessage = messages[messages.length - 1].content;
-
-    const chat = model.startChat({ history });
-    const result = await chat.sendMessage(lastMessage);
-    const reply = result.response.text();
-
+    const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content || "Tidak ada respons.";
     res.json({ reply });
   } catch (err) {
     console.error(err);
